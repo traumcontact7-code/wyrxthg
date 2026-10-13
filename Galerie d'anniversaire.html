@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Galerie d'anniversaire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Caveat:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --wall:#dfe4fb; --ink:#1f2347; --muted:#565b86; --paper:#fffdf8;
+  --pink:#ff5d8f; --sun:#ffc93c; --mint:#2fcfa3; --blue:#5b7cff;
+  --shadow:rgba(31,35,71,.22); --btn-text:#fff;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --wall:#171a36; --ink:#f3f1ff; --muted:#aab0e0; --paper:#fffdf8;
+    --shadow:rgba(0,0,0,.5); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --wall:#171a36; --ink:#f3f1ff; --muted:#aab0e0; --paper:#fffdf8;
+  --shadow:rgba(0,0,0,.5); color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--wall);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.5;overflow-x:hidden;min-height:100vh}
+
+/* guirlande */
+.bunting{display:block;width:100%;height:90px;margin-bottom:-10px}
+header{text-align:center;padding:8px 20px 28px;max-width:820px;margin:0 auto}
+h1{font-family:'Caprasimo',Georgia,serif;font-weight:400;font-size:clamp(2.4rem,8vw,5rem);line-height:1.05;margin:0 0 10px;letter-spacing:-.01em}
+h1 .name{color:var(--pink);outline:none;border-bottom:3px dashed transparent;cursor:text}
+h1 .name:hover,h1 .name:focus{border-bottom-color:var(--pink)}
+.sub{font-size:1.1rem;color:var(--muted);margin:0 auto 22px;max-width:46ch}
+.sub .age{outline:none;font-weight:700;color:var(--ink)}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn{font:inherit;font-weight:700;border:0;border-radius:999px;padding:12px 22px;cursor:pointer;background:var(--ink);color:var(--wall);transition:transform .15s}
+.btn.primary{background:var(--pink);color:var(--btn-text)}
+.btn:hover{transform:translateY(-2px)}
+.btn:focus-visible,.pol:focus-visible,.lb button:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.hint{font-size:.9rem;color:var(--muted);margin-top:14px}
+
+/* mur de polaroids */
+main{max-width:1100px;margin:0 auto;padding:10px 20px 70px}
+.wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:34px 28px}
+.pol{position:relative;background:var(--paper);padding:12px 12px 14px;border-radius:3px;box-shadow:0 10px 24px -8px var(--shadow);transform:rotate(var(--r,0deg));transition:transform .25s,box-shadow .25s;cursor:pointer;border:0;text-align:left;color:#1f2347;font:inherit}
+.pol:hover{transform:rotate(0deg) scale(1.04);z-index:2;box-shadow:0 18px 30px -10px var(--shadow)}
+.pol .pin{position:absolute;top:-10px;left:50%;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:var(--c,var(--pink));box-shadow:0 3px 4px rgba(0,0,0,.3), inset -3px -3px 0 rgba(0,0,0,.15)}
+.pol .ph{aspect-ratio:1/1;border-radius:2px;overflow:hidden;display:grid;place-items:center;background:var(--bg);font-size:3.4rem}
+.pol .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.pol .cap{font-family:'Caveat',cursive;font-size:1.5rem;font-weight:700;margin-top:10px;min-height:1.6em;text-align:center;outline:none;line-height:1.2}
+.pol .del{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(31,35,71,.75);color:#fff;font-size:16px;cursor:pointer;display:none;line-height:1}
+.pol.mine:hover .del,.pol.mine:focus-within .del{display:block}
+.empty-tag{position:absolute;bottom:56px;left:0;right:0;text-align:center;font-family:'Caveat',cursive;font-size:1.3rem;color:rgba(31,35,71,.6)}
+
+/* visionneuse */
+.lb{position:fixed;inset:0;background:rgba(15,17,40,.9);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.lb.open{display:flex;animation:fade .2s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.lb figure{margin:0;background:var(--paper);padding:14px 14px 18px;border-radius:3px;max-width:min(92vw,720px);box-shadow:0 30px 60px rgba(0,0,0,.5);color:#1f2347}
+.lb .big{max-height:70vh;max-width:100%;min-width:min(70vw,360px);aspect-ratio:1/1;display:grid;place-items:center;font-size:7rem;overflow:hidden}
+.lb .big img{max-width:100%;max-height:70vh;object-fit:contain;display:block}
+.lb figcaption{font-family:'Caveat',cursive;font-size:1.9rem;font-weight:700;text-align:center;margin-top:10px}
+.lb button{position:absolute;border:0;background:rgba(255,255,255,.15);color:#fff;width:48px;height:48px;border-radius:50%;font-size:22px;cursor:pointer}
+.lb .x{top:calc(14px + env(safe-area-inset-top,0px));right:14px}
+.lb .prev{left:12px;top:50%}
+.lb .next{right:12px;top:50%}
+
+footer{text-align:center;padding:10px 20px 40px;color:var(--muted);font-family:'Caveat',cursive;font-size:1.5rem}
+
+/* confettis */
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:40}
+@media (prefers-reduced-motion:reduce){.pol,.btn{transition:none}.lb.open{animation:none}}
+</style>
+</head>
+<body>
+
+<svg class="bunting" viewBox="0 0 800 90" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0 8 Q 200 70 400 30 T 800 8" fill="none" stroke="#1f2347" stroke-width="2" opacity=".5"/>
+  <g id="flags"></g>
+</svg>
+
+<header>
+  <h1>Joyeux anniversaire <span class="name" contenteditable="true" spellcheck="false" aria-label="Prénom, modifiable">Prénom</span>&nbsp;!</h1>
+  <p class="sub"><span class="age" contenteditable="true" spellcheck="false" aria-label="Âge, modifiable">30 ans</span> de rires, de voyages et de bons moments. Voici quelques souvenirs.</p>
+  <div class="actions">
+    <button class="btn primary" id="add">Ajouter des photos</button>
+    <button class="btn" id="party">Lancer les confettis</button>
+  </div>
+  <input type="file" id="file" accept="image/*" multiple hidden>
+  <p class="hint">Clique sur le prénom, l'âge ou une légende pour les modifier. Les photos ajoutées restent sur cet appareil.</p>
+</header>
+
+<main>
+  <div class="wall" id="wall"></div>
+</main>
+
+<footer>Fait avec amour pour une belle journée</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo en grand">
+  <button class="x" id="lbx" aria-label="Fermer">✕</button>
+  <button class="prev" id="lbp" aria-label="Photo précédente">‹</button>
+  <figure><div class="big" id="lbbig"></div><figcaption id="lbcap"></figcaption></figure>
+  <button class="next" id="lbn" aria-label="Photo suivante">›</button>
+</div>
+<canvas id="confetti"></canvas>
+
+<script>
+const COLORS=['#ff5d8f','#ffc93c','#2fcfa3','#5b7cff','#ff8a4c'];
+// guirlande
+(function(){
+  const g=document.getElementById('flags');let h='';
+  for(let i=0;i<14;i++){
+    const x=30+i*56, t=i/13;
+    const y=8+ (t<.5? 62*Math.sin(t*Math.PI)*0.9 : 62*Math.sin(t*Math.PI)*0.55)*0.8;
+    h+=`<path d="M${x-16} ${y-2} L${x+16} ${y-2} L${x} ${y+34} Z" fill="${COLORS[i%5]}" opacity=".95"/>`;
+  }
+  g.innerHTML=h;
+})();
+
+// données
+const slots=[
+  {e:'🎂',c:'Le gâteau !',bg:'linear-gradient(135deg,#ffd3e2,#ff9bbb)'},
+  {e:'🎈',c:'Les ballons',bg:'linear-gradient(135deg,#ffe9a8,#ffc93c)'},
+  {e:'🥂',c:'Santé !',bg:'linear-gradient(135deg,#bff3e2,#2fcfa3)'},
+  {e:'🎁',c:'Les cadeaux',bg:'linear-gradient(135deg,#c9d5ff,#7d98ff)'},
+  {e:'🎶',c:'La soirée',bg:'linear-gradient(135deg,#ffd9bf,#ff9a62)'},
+  {e:'📸',c:'Toute la bande',bg:'linear-gradient(135deg,#e3cbff,#b184ff)'},
+];
+const items=slots.map((s,i)=>({...s,src:null,mine:false,pin:COLORS[i%5],r:((i*37)%9-4)*0.8}));
+const wall=document.getElementById('wall');
+
+function render(){
+  wall.innerHTML='';
+  items.forEach((it,i)=>{
+    const d=document.createElement('div');
+    d.className='pol'+(it.mine?' mine':'');
+    d.tabIndex=0;d.setAttribute('role','button');
+    d.setAttribute('aria-label','Ouvrir : '+it.c);
+    d.style.setProperty('--r',it.r+'deg');d.style.setProperty('--c',it.pin);d.style.setProperty('--bg',it.bg||'#ddd');
+    d.innerHTML=`<span class="pin"></span><div class="ph">${it.src?`<img alt="" src="${it.src}">`:it.e}</div><div class="cap" contenteditable="true" spellcheck="false"></div>`+(it.mine?'<button class="del" aria-label="Retirer la photo">✕</button>':'');
+    const cap=d.querySelector('.cap');cap.textContent=it.c;
+    cap.addEventListener('click',e=>e.stopPropagation());
+    cap.addEventListener('input',()=>{it.c=cap.textContent});
+    cap.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();cap.blur()}e.stopPropagation()});
+    const del=d.querySelector('.del');
+    if(del)del.addEventListener('click',e=>{e.stopPropagation();items.splice(i,1);render()});
+    d.addEventListener('click',()=>openLb(i));
+    d.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target===d){e.preventDefault();openLb(i)}});
+    wall.appendChild(d);
+  });
+}
+render();
+
+// ajout de photos
+const file=document.getElementById('file');
+document.getElementById('add').onclick=()=>file.click();
+file.onchange=()=>{
+  const files=[...file.files];
+  // remplace d'abord les emplacements vides, puis ajoute
+  files.forEach(f=>{
+    const rd=new FileReader();
+    rd.onload=()=>{
+      const idx=items.findIndex(x=>!x.src);
+      const k=items.length;
+      const base={src:rd.result,mine:true,c:'Un super souvenir',pin:COLORS[k%5],r:((k*53)%9-4)*0.8,bg:'#ddd'};
+      if(idx>-1){items[idx]={...items[idx],...base,c:items[idx].c}}else{items.push(base)}
+      render();
+    };
+    rd.readAsDataURL(f);
+  });
+  file.value='';
+};
+
+// visionneuse
+const lb=document.getElementById('lb'),big=document.getElementById('lbbig'),lcap=document.getElementById('lbcap');
+let cur=0,lastFocus=null;
+function show(){
+  const it=items[cur];
+  big.style.background=it.src?'transparent':it.bg;
+  big.innerHTML=it.src?`<img alt="${it.c.replace(/"/g,'')}" src="${it.src}">`:it.e;
+  lcap.textContent=it.c;
+}
+function openLb(i){cur=i;lastFocus=document.activeElement;show();lb.classList.add('open');document.getElementById('lbx').focus()}
+function closeLb(){lb.classList.remove('open');if(lastFocus)lastFocus.focus()}
+function step(n){cur=(cur+n+items.length)%items.length;show()}
+document.getElementById('lbx').onclick=closeLb;
+document.getElementById('lbp').onclick=()=>step(-1);
+document.getElementById('lbn').onclick=()=>step(1);
+lb.addEventListener('click',e=>{if(e.target===lb)closeLb()});
+document.addEventListener('keydown',e=>{
+  if(!lb.classList.contains('open'))return;
+  if(e.key==='Escape')closeLb();
+  if(e.key==='ArrowLeft')step(-1);
+  if(e.key==='ArrowRight')step(1);
+});
+
+// confettis
+const cv=document.getElementById('confetti'),cx=cv.getContext('2d');
+let parts=[],raf=null;
+function size(){cv.width=innerWidth;cv.height=innerHeight}
+addEventListener('resize',size);size();
+function party(){
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  for(let i=0;i<160;i++){
+    parts.push({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.4,vx:(Math.random()-.5)*3,vy:2+Math.random()*4,s:6+Math.random()*7,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:COLORS[i%5]});
+  }
+  if(!raf)loop();
+}
+function loop(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);cx.restore()});
+  parts=parts.filter(p=>p.y<cv.height+20);
+  raf=parts.length?requestAnimationFrame(loop):null;
+  if(!parts.length)cx.clearRect(0,0,cv.width,cv.height);
+}
+document.getElementById('party').onclick=party;
+setTimeout(party,500);
+</script>
+</body>
+</html>
